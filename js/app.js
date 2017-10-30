@@ -18,8 +18,8 @@ Card.prototype = {
         this.HTMLElement = (function() {
             const i = document.createElement('i');
             i.classList.add('fa', symbol);
-            i.id = id;
             const li = document.createElement('li');
+            li.id = id;
             li.classList.add('card');
             li.appendChild(i);
             return li;
@@ -29,10 +29,11 @@ Card.prototype = {
         return this.status === CardStatus.CLOSE;
     },
     reset: function(symbol) { 
-        const i = document.getElementById(this.id);
+        const li = document.getElementById(this.id);
+        const i = li.firstChild;
         i.classList.remove(this.symbol);
         i.classList.add(symbol);
-    },
+    }
 };
 
 const Deck = function() {
@@ -103,9 +104,9 @@ const Controller = function() {
     
 Controller.prototype = {
     init: function() {
-        this.deck = new Deck();
         this.moves = 0;
         this.drawMoves();        
+        this.deck = new Deck();
     },
     startNewGame: function() {
         this.deck.draw();
