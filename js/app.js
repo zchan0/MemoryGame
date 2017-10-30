@@ -32,7 +32,7 @@ Card.prototype = {
         const i = document.getElementById(this.id);
         i.classList.remove(this.symbol);
         i.classList.add(symbol);
-    }
+    },
 };
 
 const Deck = function() {
@@ -103,11 +103,11 @@ const Controller = function() {
     
 Controller.prototype = {
     init: function() {
+        this.deck = new Deck();
         this.moves = 0;
         this.drawMoves();        
     },
     startNewGame: function() {
-        this.deck = new Deck();
         this.deck.draw();
     },
     drawMoves: function() {
@@ -133,5 +133,5 @@ Controller.prototype = {
     }
 };
 
-let controller = new Controller();
+const controller = new Controller();
 controller.startNewGame();
