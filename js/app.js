@@ -33,6 +33,10 @@ Card.prototype = {
         const i = li.firstChild;
         i.classList.remove(this.symbol);
         i.classList.add(symbol);
+    },
+    addClickHandler: function(clickHandler) {
+        const li = document.getElementById(this.id);
+        li.onclick = clickHandler;
     }
 };
 
@@ -65,6 +69,11 @@ Deck.prototype = {
         for (let i = 0; i < this.dimension * this.dimension; ++i) {
             this.cards[i].reset(this.symbols[i]);
         }
+    },
+    setupCardClickHandler: function(clickHandler) {
+        this.cards.forEach(function(card) {
+            card.addClickHandler(clickHandler);
+        });
     }
 };
 
@@ -103,36 +112,59 @@ const Controller = function() {
 };
     
 Controller.prototype = {
-    init: function() {
-        this.moves = 0;
-        this.drawMoves();        
+    init: function() {     
         this.deck = new Deck();
+        this.initMoves();
+    },
+    initMoves: function() {
+        const span = document.createElement('span');
+        span.classList.add('moves');
+        span.textContent = 0;
+        const stars = document.getElementsByClassName('stars')[0];
+        stars.parentNode.insertBefore(span, stars.nextSibling);
+    },
+    updateMoves: function(moves) {
+        if (moves < 0) moves = 0;
+        const span = document.getElementsByClassName('moves')[0];
+        span.textContent = moves;
+        // update star rating
+        if (moves < 20) {
+            this.lightStars(3);
+        } else if (moves < 40) {
+            this.lightStars(2);
+        } else {
+            this.lightStars(1);
+        }
+    },
+    resetMoves: function() {
+        this.updateMoves(0);
+    },
+    lightStars: function(numOfStars) {
+        const ul = document.querySelector('ul.stars');
+        const star = 'fa-star';
+        const staro = 'fa-star-o';
+        for (let idx = numOfStars; idx < 3; ++idx) {
+            const i = ul.children[idx].firstChild;  // ul.li.i
+            i.classList.remove(star);
+            i.classList.add(staro);
+        }
     },
     startNewGame: function() {
         this.deck.draw();
-    },
-    drawMoves: function() {
-        const ul = document.createElement('ul');
-        ul.classList.add('stars');
-        for (let i = 0; i < this.moves; ++i) {
-            const i = document.createElement('i');
-            i.classList.add('fa', 'fa-star');
-            const li = document.createElement('li');
-            li.appendChild(i);
-            ul.appendChild(li);
-        }
-        document.getElementsByClassName('score-panel')[0].appendChild(ul);
-
-        const span = document.createElement('span');
-        span.classList.add('moves');
-        span.textContent = this.moves + ' Moves';
-        document.getElementsByClassName('score-panel')[0].appendChild(span);
+        // cannot put following statements to init()
+        this.deck.setupCardClickHandler(function(event) {
+            console.log(event.target);
+        });
     },
     resetGame: function() {
-        this.moves = 0;
         this.deck.reset();
-    }
+        this.resetMoves();
+    },
 };
 
 const controller = new Controller();
 controller.startNewGame();
+
+function resetGame() {
+    controller.resetGame();
+}
