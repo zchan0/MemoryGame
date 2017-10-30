@@ -114,18 +114,10 @@ const Controller = function() {
 Controller.prototype = {
     init: function() {     
         this.deck = new Deck();
-        this.initMoves();
-    },
-    initMoves: function() {
-        const span = document.createElement('span');
-        span.classList.add('moves');
-        span.textContent = 0;
-        const stars = document.getElementsByClassName('stars')[0];
-        stars.parentNode.insertBefore(span, stars.nextSibling);
     },
     updateMoves: function(moves) {
         if (moves < 0) moves = 0;
-        const span = document.getElementsByClassName('moves')[0];
+        const span = document.querySelector('span.moves');
         span.textContent = moves;
         // update star rating
         if (moves < 20) {
