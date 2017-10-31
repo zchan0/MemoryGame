@@ -6,9 +6,6 @@ const CardStatus = {
 };
 Object.freeze(CardStatus);
 
-const STAR = 'fa-star';
-const STARO = 'fa-star-o';
-
 const Card = function(id, symbol) {
     this.init(id, symbol);
 };
@@ -37,8 +34,7 @@ Card.prototype = {
     reset: function(symbol) { 
         const li = document.getElementById(this.id);
         const i = li.firstChild;
-        i.classList.remove(this.symbol);
-        i.classList.add(symbol);
+        i.classList.replace(this.symbol, symbol);
         this.symbol = symbol;
         this.setStatus(CardStatus.CLOSE);
     },
@@ -48,8 +44,7 @@ Card.prototype = {
     },
     setStatus: function(status) {
         const li = document.getElementById(this.id);
-        li.classList.remove(this.status);
-        li.classList.add(status);
+        li.classList.replace(this.status, status);
         this.status = status;
     }
 };
@@ -118,6 +113,9 @@ function makeSymbolsArray() {
     let cloneSymbolsArray = symbolsArray.slice();
     return shuffle(symbolsArray.concat(cloneSymbolsArray)); // x2
 }
+
+const STAR = 'fa-star';
+const STARO = 'fa-star-o';
 
 const Controller = function() {
     this.init();  
@@ -196,6 +194,7 @@ function clickHandler(event) {
         else {
             controller.increMoves();
             const topCard = controller.openCards.pop();
+            // not match
             if (!card.isMatched(topCard)) {
                 card.setStatus(CardStatus.UNMATCH);
                 topCard.setStatus(CardStatus.UNMATCH);
@@ -204,6 +203,7 @@ function clickHandler(event) {
                     topCard.setStatus(CardStatus.CLOSE);
                 }, 1000 * 1);
             } 
+            // get matched
             else {
                 card.setStatus(CardStatus.MATCH);
                 topCard.setStatus(CardStatus.MATCH);
