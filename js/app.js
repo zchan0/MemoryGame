@@ -1,10 +1,13 @@
 const CardStatus = {
     OPEN: 'open',
-    SHOW: 'show',
     MATCH: 'match',
-    CLOSE: ''
+    UNMATCH: 'unmatch',
+    CLOSE: 'close'
 };
 Object.freeze(CardStatus);
+
+const STAR = 'fa-star';
+const STARO = 'fa-star-o';
 
 const Card = function(id, symbol) {
     this.init(id, symbol);
@@ -114,43 +117,53 @@ const Controller = function() {
 Controller.prototype = {
     init: function() {     
         this.deck = new Deck();
+        this.moves = 0;
+        this.stars = 3;
+        this.openCards = [];
     },
-    updateMoves: function(moves) {
-        if (moves < 0) moves = 0;
+    updateRatings: function() {
+        const dimStars = Math.floor(this.moves / 9);    // < 9 moves, 3 starrs; 9 <= moves < 18, 2 stars, etc.
+        this.updateStars(dimStars);
+        this.updateMoves();
+    },
+    resetRatings: function() {
+        this.moves = 0;
+        this.updateMoves();
+        // reset stars
+        const is = document.querySelectorAll('ul.stars>li>i.fa');
+        const isArray = Array.prototype.slice.call(is);
+        isArray.forEach(function(i) {
+            if (i.classList.contains(STARO)) {
+                i.classList.replace(STARO, STAR);
+            }
+        });
+    },
+    updateMoves: function() {
         const span = document.querySelector('span.moves');
-        span.textContent = moves;
-        // update star rating
-        if (moves < 20) {
-            this.lightStars(3);
-        } else if (moves < 40) {
-            this.lightStars(2);
-        } else {
-            this.lightStars(1);
+        span.textContent = this.moves;
+    },
+    updateStars: function(dimStars) {
+        dimStars = Math.min(3, dimStars); 
+        this.stars = 3 - dimStars;
+        const is = document.querySelectorAll('ul.stars>li>i.fa');
+        for (let i = 2; dimStars > 0 && i >= 0; --dimStars, --i) {
+            is[i].classList.replace(STAR, STARO);
         }
     },
-    resetMoves: function() {
-        this.updateMoves(0);
-    },
-    lightStars: function(numOfStars) {
-        const ul = document.querySelector('ul.stars');
-        const star = 'fa-star';
-        const staro = 'fa-star-o';
-        for (let idx = numOfStars; idx < 3; ++idx) {
-            const i = ul.children[idx].firstChild;  // ul.li.i
-            i.classList.remove(star);
-            i.classList.add(staro);
-        }
+    // convenient function, called when two cards get compared
+    increMoves: function() {
+        this.moves++;
+        this.updateRatings(); // NOT updateMoves. 
     },
     startNewGame: function() {
         this.deck.draw();
         // cannot put following statements to init()
-        this.deck.setupCardClickHandler(function(event) {
-            console.log(event.target);
-        });
+        this.deck.setupCardClickHandler(clickHandler);
     },
     resetGame: function() {
         this.deck.reset();
-        this.resetMoves();
+        this.resetRatings();
+        this.openCards = [];
     },
 };
 
