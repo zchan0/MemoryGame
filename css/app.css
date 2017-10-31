@@ -54,8 +54,6 @@ h1 {
 .deck .card {
     height: 125px;
     width: 125px;
-    background: #2e3d49;
-    font-size: 0;
     color: #ffffff;
     border-radius: 8px;
     cursor: pointer;
@@ -65,19 +63,26 @@ h1 {
     box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
 }
 
+.deck .card.close {
+    background: #2e3d49;
+    font-size: 0;
+}
+
 .deck .card.open {
     transform: rotateY(0);
     background: #02b3e4;
     cursor: default;
-}
-
-.deck .card.show {
     font-size: 33px;
 }
 
 .deck .card.match {
     cursor: default;
     background: #02ccba;
+    font-size: 33px;
+}
+
+.deck .card.unmatch {
+    background: #ea5d52;
     font-size: 33px;
 }
 
