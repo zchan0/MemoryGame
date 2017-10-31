@@ -23,7 +23,7 @@ Card.prototype = {
             i.classList.add('fa', symbol);
             const li = document.createElement('li');
             li.id = id;
-            li.classList.add('card');
+            li.classList.add('card', CardStatus.CLOSE);
             li.appendChild(i);
             return li;
         })();  
@@ -31,15 +31,26 @@ Card.prototype = {
     isClickable: function() {
         return this.status === CardStatus.CLOSE;
     },
+    isMatched: function(otherCard) {
+        return this.symbol === otherCard.symbol;
+    },
     reset: function(symbol) { 
         const li = document.getElementById(this.id);
         const i = li.firstChild;
         i.classList.remove(this.symbol);
         i.classList.add(symbol);
+        this.symbol = symbol;
+        this.setStatus(CardStatus.CLOSE);
     },
     addClickHandler: function(clickHandler) {
         const li = document.getElementById(this.id);
         li.onclick = clickHandler;
+    },
+    setStatus: function(status) {
+        const li = document.getElementById(this.id);
+        li.classList.remove(this.status);
+        li.classList.add(status);
+        this.status = status;
     }
 };
 
@@ -52,11 +63,9 @@ Deck.prototype = {
         this.dimension = 4;
         this.cards = [];
         this.symbols = makeSymbolsArray();
-        for (let i = 0; i < this.dimension; ++i) {
-            for (let j = 0; j < this.dimension; ++j) {
-                let id = '' + i + j;
-                this.cards.push(new Card(id, this.symbols[i * this.dimension + j]));
-            }
+        for (let i = 0; i < this.dimension * this.dimension; ++i) {
+            let id = '' + i;
+            this.cards.push(new Card(id, this.symbols[i]));
         }
     },
     draw: function() {
@@ -172,4 +181,36 @@ controller.startNewGame();
 
 function resetGame() {
     controller.resetGame();
+}
+
+function clickHandler(event) {
+    const li = event.target;
+    const card = controller.deck.cards[li.id]; // card clicked
+    if (card.isClickable()) {
+        card.setStatus(CardStatus.OPEN);
+        // openCards is empty
+        if (!controller.openCards.length) {
+            controller.openCards.push(card);
+        } 
+        // compare two cards
+        else {
+            controller.increMoves();
+            const topCard = controller.openCards.pop();
+            if (!card.isMatched(topCard)) {
+                card.setStatus(CardStatus.UNMATCH);
+                topCard.setStatus(CardStatus.UNMATCH);
+                setTimeout(function() {
+                    card.setStatus(CardStatus.CLOSE);
+                    topCard.setStatus(CardStatus.CLOSE);
+                }, 1000 * 1);
+            } 
+            else {
+                card.setStatus(CardStatus.MATCH);
+                topCard.setStatus(CardStatus.MATCH);
+                // check if wins
+            }
+        }
+    } else {
+        console.log('card is not clickable');
+    }
 }
