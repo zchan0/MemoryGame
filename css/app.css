@@ -26,6 +26,7 @@ body {
     align-items: center;
     flex-direction: column;
     background: #ffffff url('../img/geometry2.png'); /* Background pattern from Subtle Patterns */
+    line-height: 90%;
 }
 
 h1 {
@@ -38,22 +39,22 @@ h1 {
  */
 
 .deck {
-    width: 660px;
-    min-height: 680px;
+    width: 560px;
+    min-height: 560px;
     background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
-    padding: 32px;
+    padding: 12px 32px;
+    margin: 0;
     border-radius: 10px;
     box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    margin: 0 0 3em;
 }
 
 .deck .card {
-    height: 125px;
-    width: 125px;
+    height: 100px;
+    width: 100px;
     color: #ffffff;
     border-radius: 8px;
     cursor: pointer;
