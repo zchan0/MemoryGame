@@ -214,7 +214,7 @@ function clickHandler(event) {
                 setTimeout(function() {
                     card.setStatus(CardStatus.CLOSE);
                     topCard.setStatus(CardStatus.CLOSE);
-                }, 1000 * 1);
+                }, 600 * 1);
             } 
             // get matched
             else {
