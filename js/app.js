@@ -185,6 +185,15 @@ Controller.prototype = {
         this.resetRatings();
         this.openCards = [];
     },
+    hasWon: function() {
+        let hasWon = true;
+        this.deck.cards.forEach(function(card) {
+           if (card.status === CardStatus.CLOSE) {
+               hasWon = false;
+           }
+        });
+        return hasWon;
+    },
     toggleCongrats: function() {
         const modal = document.querySelector('.modal');
         const p = document.querySelector('.modal>p');
@@ -232,7 +241,9 @@ function clickHandler(event) {
                 card.setStatus(CardStatus.MATCH);
                 topCard.setStatus(CardStatus.MATCH);
                 // check if wins
-                controller.toggleCongrats();
+                if (controller.hasWon()) {
+                    controller.toggleCongrats();
+                }
             }
         }
     } else {
