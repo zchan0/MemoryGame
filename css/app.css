@@ -18,6 +18,7 @@ body {
 
 body {
     font-family: 'Coda', cursive;
+    background: #ffffff url('../img/geometry2.png'); /* Background pattern from Subtle Patterns */
 }
 
 .container {
@@ -25,8 +26,6 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: #ffffff url('../img/geometry2.png'); /* Background pattern from Subtle Patterns */
-    line-height: 90%;
 }
 
 h1 {
@@ -145,11 +144,12 @@ h1 {
  }
 
  .modal button {
-     width: 100px;
+     width: 150px;
      height: 40px;
      display: block;
      margin: 0 auto;
      background: #1db8a8;
      color: white;
      border: 0;
+     font-size: 18px;
  }
