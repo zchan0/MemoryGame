@@ -185,6 +185,12 @@ Controller.prototype = {
         this.resetRatings();
         this.openCards = [];
     },
+    toggleCongrats: function() {
+        const modal = document.querySelector('.modal');
+        const p = document.querySelector('.modal>p');
+        p.textContent = 'With ' + this.moves + ' Moves and ' + this.stars + ' Stars!';
+        modal.classList.toggle('hidden');
+    }
 };
 
 const controller = new Controller();
@@ -192,6 +198,11 @@ controller.startNewGame();
 
 function resetGame() {
     controller.resetGame();
+}
+
+function playAgain() {
+    controller.resetGame();
+    controller.toggleCongrats();
 }
 
 function clickHandler(event) {
@@ -221,6 +232,7 @@ function clickHandler(event) {
                 card.setStatus(CardStatus.MATCH);
                 topCard.setStatus(CardStatus.MATCH);
                 // check if wins
+                controller.toggleCongrats();
             }
         }
     } else {
