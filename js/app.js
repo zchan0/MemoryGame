@@ -20,7 +20,7 @@ Card.prototype = {
             i.classList.add('fa', symbol);
             const li = document.createElement('li');
             li.id = id;
-            li.classList.add('card', CardStatus.CLOSE);
+            li.classList.add('card', 'animated', 'flipInY', CardStatus.CLOSE);
             li.appendChild(i);
             return li;
         })();  
@@ -44,8 +44,21 @@ Card.prototype = {
     },
     setStatus: function(status) {
         const li = document.getElementById(this.id);
+        const oldAnimation = this.getAnimatedName(this.status);
+        const newAnimation = this.getAnimatedName(status);
+        li.classList.replace(oldAnimation, newAnimation);   // to use replace, MUST setup initial animation class 
         li.classList.replace(this.status, status);
         this.status = status;
+    },
+    getAnimatedName: function(status) {
+        switch (status) {
+            case CardStatus.OPEN: case CardStatus.CLOSE:
+                return 'flipInY'; break;
+            case CardStatus.MATCH:
+                return 'rubberBand'; break;
+            case CardStatus.UNMATCH:
+                return 'shake'; break;
+        }
     }
 };
 
