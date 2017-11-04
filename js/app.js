@@ -14,13 +14,13 @@ Card.prototype = {
     init: function(id, symbol) {
         this.id = id;
         this.symbol = symbol;
-        this.status = CardStatus.CLOSE;
+        this.status = CardStatus.OPEN;
         this.HTMLElement = (function() {
             const i = document.createElement('i');
             i.classList.add('fa', symbol);
             const li = document.createElement('li');
             li.id = id;
-            li.classList.add('card', 'animated', 'flipInY', CardStatus.CLOSE);
+            li.classList.add('card', 'animated', 'pulse', CardStatus.OPEN);
             li.appendChild(i);
             return li;
         })();  
@@ -36,7 +36,7 @@ Card.prototype = {
         const i = li.firstChild;
         i.classList.replace(this.symbol, symbol);
         this.symbol = symbol;
-        this.setStatus(CardStatus.CLOSE);
+        this.setStatus(CardStatus.OPEN);
     },
     addClickHandler: function(clickHandler) {
         const li = document.getElementById(this.id);
@@ -52,8 +52,10 @@ Card.prototype = {
     },
     getAnimatedName: function(status) {
         switch (status) {
-            case CardStatus.OPEN: case CardStatus.CLOSE:
+            case CardStatus.CLOSE:
                 return 'flipInY'; break;
+            case CardStatus.OPEN:
+                return 'pulse'; break;
             case CardStatus.MATCH:
                 return 'rubberBand'; break;
             case CardStatus.UNMATCH:
@@ -89,6 +91,11 @@ Deck.prototype = {
         for (let i = 0; i < this.dimension * this.dimension; ++i) {
             this.cards[i].reset(this.symbols[i]);
         }
+    },
+    closeCards: function() {
+        this.cards.forEach(function(card) {
+            card.setStatus(CardStatus.CLOSE);
+        });
     },
     setupCardClickHandler: function(clickHandler) {
         this.cards.forEach(function(card) {
@@ -135,8 +142,12 @@ const Controller = function() {
 };
     
 Controller.prototype = {
-    init: function() {     
+    init: function() {    
+        // init deck 
         this.deck = new Deck();
+        this.deck.draw();
+        this.deck.setupCardClickHandler(clickHandler);
+        // init score panel
         this.moves = 0;
         this.stars = 3;
         this.openCards = [];
@@ -176,14 +187,15 @@ Controller.prototype = {
         this.updateRatings(); // NOT updateMoves. 
     },
     startNewGame: function() {
-        this.deck.draw();
-        // cannot put following statements to init()
-        this.deck.setupCardClickHandler(clickHandler);
+        setTimeout(() => {
+            this.deck.closeCards();
+        }, 1000 * 3);
     },
     resetGame: function() {
         this.deck.reset();
         this.resetRatings();
         this.openCards = [];
+        this.startNewGame();
     },
     hasWon: function() {
         let hasWon = true;
