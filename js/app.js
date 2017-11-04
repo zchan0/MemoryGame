@@ -1,3 +1,7 @@
+//
+// ─── STOPWATCH ──────────────────────────────────────────────────────────────────
+//
+
 const Stopwatch = function(el) {
     this.timeValue = '';
     this.el = el;   
@@ -37,6 +41,10 @@ Stopwatch.prototype = {
         return this.timeValue;
     }, 
 };
+
+//
+// ─── CARD ───────────────────────────────────────────────────────────────────────
+//
 
 const CardStatus = {
     OPEN: 'open',
@@ -103,6 +111,10 @@ Card.prototype = {
         }
     }
 };
+
+//
+// ─── DECK ───────────────────────────────────────────────────────────────────────
+//
 
 const Deck = function() {
     this.init();
@@ -173,6 +185,10 @@ function makeSymbolsArray() {
     let cloneSymbolsArray = symbolsArray.slice();
     return shuffle(symbolsArray.concat(cloneSymbolsArray)); // x2
 }
+
+//
+// ─── CONTROLLER ─────────────────────────────────────────────────────────────────
+//
 
 const STAR = 'fa-star';
 const STARO = 'fa-star-o';
@@ -265,6 +281,10 @@ Controller.prototype = {
         }
     }
 };
+
+//
+// ─── MAIN ───────────────────────────────────────────────────────────────────────
+//
 
 const controller = new Controller();
 controller.startNewGame();
