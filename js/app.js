@@ -199,6 +199,11 @@ Controller.prototype = {
         const p = document.querySelector('.modal>p');
         p.textContent = 'With ' + this.moves + ' Moves and ' + this.stars + ' Stars!';
         modal.classList.toggle('hidden');
+        if (modal.classList.contains('bounceIn')) {
+            modal.classList.remove('bounceIn');
+        } else {
+            modal.classList.add('bounceIn');
+        }
     }
 };
 
