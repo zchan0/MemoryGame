@@ -1,3 +1,43 @@
+const Stopwatch = function(el) {
+    this.timeValue = '';
+    this.el = el;   
+};
+
+Stopwatch.prototype = {
+    start: function() {
+        this.beginTime = new Date().getTime();
+        this.intervalID = setInterval(this.update.bind(this), 1000);    // use bind(this) to change the context of setInterval, otherwise update cannot access this 
+    },
+    stop: function() {
+        this.endTime = new Date().getTime();
+        this.update();
+        clearInterval(this.intervalID);
+    },
+    reset: function() {
+        this.timeValue = '';
+        this.el.textContent = '';
+        if (this.intervalID) clearInterval(this.intervalID);
+    },
+    update: function() {
+        this.currentTime = new Date().getTime();
+        this.timeValue = ''; // reset
+
+        const duration = this.currentTime - this.beginTime; // calculate time elapsed
+        const hh = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); // 0 ~ 23
+        const mm = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60)); // 0 ~ 59
+        const ss = Math.floor((duration % (1000 * 60)) / 1000); // 0 ~ 59
+
+        if (hh) this.timeValue = hh + ` hours `;
+        if (mm) this.timeValue = mm + ` mins `;
+        this.timeValue += (ss < 10 ? ('0' + ss) : ss) + ' secs';
+        
+        this.el.textContent = 'in ' + this.timeValue;
+    },
+    getDuration: function() {
+        return this.timeValue;
+    }, 
+};
+
 const CardStatus = {
     OPEN: 'open',
     MATCH: 'match',
@@ -151,9 +191,11 @@ Controller.prototype = {
         this.moves = 0;
         this.stars = 3;
         this.openCards = [];
+        const stopwatchEl = document.querySelector('.timer>.stopwatch');
+        this.stopwatch = new Stopwatch(stopwatchEl)
     },
     updateRatings: function() {
-        const dimStars = Math.floor(this.moves / 9);    // < 9 moves, 3 starrs; 9 <= moves < 18, 2 stars, etc.
+        const dimStars = Math.floor(this.moves / 12);
         this.updateStars(dimStars);
         this.updateMoves();
     },
@@ -174,7 +216,7 @@ Controller.prototype = {
         span.textContent = this.moves;
     },
     updateStars: function(dimStars) {
-        dimStars = Math.min(3, dimStars); 
+        dimStars = Math.min(2, dimStars); // at least 1 star
         this.stars = 3 - dimStars;
         const is = document.querySelectorAll('ul.stars>li>i.fa');
         for (let i = 2; dimStars > 0 && i >= 0; --dimStars, --i) {
@@ -189,10 +231,15 @@ Controller.prototype = {
     startNewGame: function() {
         setTimeout(() => {
             this.deck.closeCards();
+            // stopwatch
+            this.stopwatch.el.classList.remove('hidden');
+            this.stopwatch.start();
         }, 1000 * 3);
     },
     resetGame: function() {
         this.deck.reset();
+        this.stopwatch.reset();
+        this.stopwatch.el.classList.add('hidden');
         this.resetRatings();
         this.openCards = [];
         this.startNewGame();
@@ -209,7 +256,7 @@ Controller.prototype = {
     toggleCongrats: function() {
         const modal = document.querySelector('.modal');
         const p = document.querySelector('.modal>p');
-        p.textContent = 'With ' + this.moves + ' Moves and ' + this.stars + ' Stars!';
+        p.textContent = 'With ' + this.moves + ' Moves and ' + this.stars + ' Stars In ' + this.stopwatch.getDuration() + '!';
         modal.classList.toggle('hidden');
         if (modal.classList.contains('bounceIn')) {
             modal.classList.remove('bounceIn');
@@ -259,6 +306,7 @@ function clickHandler(event) {
                 topCard.setStatus(CardStatus.MATCH);
                 // check if wins
                 if (controller.hasWon()) {
+                    controller.stopwatch.stop();
                     controller.toggleCongrats();
                 }
             }
