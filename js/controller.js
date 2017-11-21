@@ -16,6 +16,23 @@ export class Controller {
         this.openCards = [];
         const stopwatchEl = document.querySelector('.timer>.stopwatch');
         this.stopwatch = new Stopwatch(stopwatchEl);
+        // setup handlers
+        this.setupHandlers();
+    }
+
+    setupHandlers() {
+        const that = this;
+
+        const restart = document.querySelector('.restart');
+        restart.addEventListener('click', function() {
+            that.resetGame();
+        }, false);
+
+        const btn = document.querySelector('.modal>button');
+        btn.addEventListener('click', function() {
+            that.resetGame();
+            that.toggleCongrats();
+        }, false);
     }
 
     // ratings

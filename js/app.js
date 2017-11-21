@@ -1,18 +1,6 @@
 import {Controller} from './controller.js';
 import {CardStatus} from './model.js';
 
-function resetGame() {
-    controller.resetGame();
-}
-
-function playAgain() {
-    controller.resetGame();
-    controller.toggleCongrats();
-}
-
-const controller = new Controller(clickHandler);
-controller.startNewGame();
-
 function clickHandler(event) {
     const li = event.target;
     const card = controller.deck.cards[li.id]; // card clicked
@@ -50,3 +38,6 @@ function clickHandler(event) {
         console.log('card is not clickable');
     }
 }
+
+const controller = new Controller(clickHandler);
+controller.startNewGame();
