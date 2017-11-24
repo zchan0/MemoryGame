@@ -2,3 +2,8 @@
 .htmlhintrc
 .stylelintrc
 .eslintrc.json
+
+/node_modules
+/docs
+
+.vscode/
