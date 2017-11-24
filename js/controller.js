@@ -6,7 +6,7 @@ const STARO = 'fa-star-o';
 
 export class Controller {
     constructor(clickHandler) {
-        // init deck 
+        // init deck
         this.deck = new Deck();
         this.deck.draw();
         this.deck.setupCardClickHandler(clickHandler);
@@ -74,7 +74,7 @@ export class Controller {
     // convenient function, called when two cards get compared
     increMoves() {
         this.moves++;
-        this.updateRatings(); // NOT updateMoves. 
+        this.updateRatings(); // NOT updateMoves.
     }
 
     startNewGame() {

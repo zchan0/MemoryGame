@@ -1,11 +1,19 @@
+var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-    entry: './js/app.js',
+    entry: [
+        'webpack/hot/dev-server',
+        'webpack-hot-middleware/client',
+        './js/app.js'
+    ],
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, 'docs/'),
+        filename: 'bundle.js',
     },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ],
     module: {
         loaders: [{
             test: /\.js$/,

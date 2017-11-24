@@ -9,7 +9,7 @@ function clickHandler(event) {
         // openCards is empty
         if (!controller.openCards.length) {
             controller.openCards.push(card);
-        } 
+        }
         // compare two cards
         else {
             controller.increMoves();
@@ -22,7 +22,7 @@ function clickHandler(event) {
                     card.setStatus(CardStatus.CLOSE);
                     topCard.setStatus(CardStatus.CLOSE);
                 }, 600 * 1);
-            } 
+            }
             // get matched
             else {
                 card.setStatus(CardStatus.MATCH);
