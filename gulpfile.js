@@ -24,7 +24,15 @@ gulp.task('html', function() {
     .pipe(gulp.dest('docs'));
 });
 
-gulp.task('build', gulp.parallel('img','css','html'));
+gulp.task('webpack', function() {
+    return new Promise(resolve => webpack(webpackConfig, (err, stats) => {
+        if (err) console.log('Webpack', err)
+        console.log(stats.toString({ colors: true }))
+        resolve()
+    }));
+});
+
+gulp.task('copy', gulp.parallel('img','css','html'));
 
 gulp.task('browserSync', function() {
     browserSync.init({
@@ -46,4 +54,6 @@ gulp.task('clean', function() {
     return del('docs');
 });
 
-gulp.task('serve',gulp.series('build', 'browserSync'));
+gulp.task('serve',gulp.series('copy', 'browserSync'));
+gulp.task('build', gulp.series('copy', 'webpack'));
+
